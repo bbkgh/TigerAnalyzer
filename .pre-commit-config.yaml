@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: run-analyzer
+        name: Run Analyzer Script
+        entry: python3 ./analyzer.py
+        language: system
+        types: [python]

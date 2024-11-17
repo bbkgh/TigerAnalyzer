@@ -1,0 +1,7 @@
+ollama:
+  model: qwen2.5
+  endpoint: http://localhost:11434
+
+rules:
+  - name: "timezone.now"
+    value: "There must not be any usage of datetime.now(); use timezone.now() from django.utils instead"
