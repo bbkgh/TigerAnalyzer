@@ -5,7 +5,7 @@ Analyzes git diffs of commits, runs rules over changes, and fails in case of err
 
 https://github.com/astral-sh/ruff/issues/14085
 
-Usage:
+## Usage:
 ``` bash
 ollama run qwen2.5
 pip install -r requirements.txt
