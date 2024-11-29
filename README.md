@@ -7,7 +7,7 @@ https://github.com/astral-sh/ruff/issues/14085
 
 ## Usage:
 ``` bash
-ollama run qwen2.5
+ollama run qwq
 pip install -r requirements.txt
 # Update config.yaml
 python ./analyzer.py COMMIT_ID
