@@ -18,3 +18,5 @@ python ./analyzer.py COMMIT_ID
 - Add sample rules from ProjectX's git history.
 - Suggest automatic rules for preventing the same kinds of bugs by using an LLM and git diffs of commits (prompt: suggest an analyzer rule if a bug exists).
 - Run a commit suggester that reads the commit before committing and suggests refactors and hints for the current commit (learning)
+- Make this more performant, single prompt with multiple rule
+- Bigger context. Send related files (e.g: fields, ...)

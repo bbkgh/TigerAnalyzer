@@ -22,13 +22,14 @@ def parse_config(path: str) -> dict:
 configs = parse_config("./config.yaml")
 
 
-def get_git_diff_text(commit_id):
+def get_git_diff_text(commit_id, git_directory):
     try:
         result = subprocess.run(
             ["git", "--no-pager", "diff", f"{commit_id}^", commit_id],
             capture_output=True,
             text=True,
             check=True,
+            cwd=git_directory,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
@@ -51,7 +52,8 @@ def analyze_diff_with_ollama(diff_text):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are an Static analyzer tool. I give you git diff of new commit and one rule. you tell me if this rule is violated in new commit or not. if rule is violated say FAIL else say PASS. Say FAIL or PASS in first line and say details after newline",
+                    # change this to llm
+                    "content": "You are an Static analyzer tool. I give you git diff of new commit and one rule. you tell me if this rule is violated in new commit or not. if rule is violated say FAIL else say PASS.  Just consider changes lines in consideration. Be concise. Always Say FAIL or PASS in first line and say details after newline so Your first word must be PASS or FAIL. show final verdict result in first word.",
                 },
                 {
                     "role": "user",
@@ -62,17 +64,17 @@ def analyze_diff_with_ollama(diff_text):
             ],
         )
         result = response["message"]["content"]
-        passed = not result.startswith("FAILED")
+        passed = not result.startswith("FAIL")
         results.append(RuleResult(result=result, rule_name=rule["name"], passed=passed))
+        print(f"Rule: {rule['name']} - {result}")
     return results
 
 
-def process_commit(commit_id):
-    diff_text = get_git_diff_text(commit_id)
-    # print(f"{diff_text=}")
+def process_commit(commit_id, git_directory):
+    diff_text = get_git_diff_text(commit_id, git_directory)
+    print(f"{diff_text}")
     analysis_results = analyze_diff_with_ollama(diff_text)
-    # print(f"{analysis_result=}")
-    # print("Ollama Analysis:", "*****".join([str(x) for x in analysis_results]))
+    print(f"xxxxxx, {[a.passed for a in analysis_results]}")
     for result in analysis_results:
         if not result.passed:
             raise Exception(f"FAIL {result.rule_name} \n \n {result.result}")
@@ -84,12 +86,18 @@ def main():
     parser.add_argument(
         "commit_id",
         help="The commit hash to process",
-        # default="13d548982d773170d76a303ffea43f96f555b143",
-        # nargs="?",
+        default="cc2739fbff205b03d090e8ec9cb7342668578938",
+        nargs="?",
+    )
+    parser.add_argument(
+        "directory",
+        help="The git directory to process",
+        default=".",
+        nargs="?",
     )
     args = parser.parse_args()
 
-    process_commit(args.commit_id)
+    process_commit(args.commit_id, args.directory)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,21 @@
 ollama:
-  model: qwen2.5
+  model: qwq
   endpoint: http://localhost:11434
 
 rules:
+  - name: "Gorm db.Raw SQL chaining"
+    value: "db.Raw in GORM does not support chaining methods like .Order or .Limit directly.Don't use db.Raw chaining"
+  - name: "Check nullability for django queryset result"
+    value: "Don't use result of a Django queryset (first,last,...) without null checking"
+  - name: "Using DRF Response with string"
+    value: "Don't Use Django Rest Frameworks Response with string. Use dict or sth else instead."
+  - name: "Fist column in django admin ui of model must be instead"
+    value: "First column (list_display) in django admin ui of model must be instead. fail if another thing is here"
+  - name: "Set explicit docker image tag"
+    value: "Always set explicit docker image tag in docker compose. fail in case of latest or empty"
+  - name: "Assert X == Y usage"
+    value: "Don't use assert X == Y instead use AssertEqual(X, Y)"
+  - name: "Bare queryset.filter usage in condition"
+    value: "Don't use django queryset raw filter without continuation (e.g: first(),last(),...) in conditions (if)"
   - name: "timezone.now"
     value: "There must not be any usage of datetime.now(); use timezone.now() from django.utils instead"
